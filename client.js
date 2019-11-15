@@ -4,7 +4,7 @@ var connectedUser;
 var remoteVideo=[];
   
 //connecting to our signaling server
-var conn = new WebSocket('ws://192.168.147.22:9090');
+var conn = new WebSocket('ws://172.23.234.75:9090');
   
 conn.onopen = function () { 
    console.log("Connected to the signaling server"); 
@@ -53,9 +53,9 @@ function send(message) {
    conn.send(JSON.stringify(message)); 
 };
   
-//****** 
+//****** *******************
 //UI selectors block 
-//******
+//****** ******************
  
 var loginPage = document.querySelector('#loginPage'); 
 var usernameInput = document.querySelector('#usernameInput'); 
@@ -140,7 +140,7 @@ function handleLogin(success) {
 
   if (hasUserMedia()) {
 
-     navigator.getUserMedia({ video: true, audio: false }, function (myStream) {
+     navigator.getUserMedia({ video: true, audio: true }, function (myStream) {
       stream = myStream;
       self.localVideo.srcObject = stream;
       // yourVideo.src = window.URL.createObjectURL(stream);
@@ -211,14 +211,10 @@ callBtn.addEventListener("click", function () {
 		
    } 
 });
-
-
-
-
-
-  
+ 
 //when somebody sends us an offer 
 function handleOffer(offer, name) { 
+   setupPeerConnection(stream);
    connectedUser = name; 
    //
    yourConn[j].setRemoteDescription(new RTCSessionDescription(offer));
@@ -235,6 +231,8 @@ function handleOffer(offer, name) {
    }, function (error) { 
       alert("Error when creating an answer"); 
    }); 
+  
+
 };
   
 //when we got an answer from a remote user
@@ -256,6 +254,7 @@ hangUpBtn.addEventListener("click", function () {
 	
    handleLeave(); 
 });
+
   
 function handleLeave() { 
    connectedUser = null; 
@@ -264,37 +263,22 @@ function handleLeave() {
 for (let k = 0; k < arrayLength; k++) {
    remoteVideo[k].srcObject=null;
 }
+
 // reset i value after hang up
  i=-1;
-   // remoteVideo[0].srcObject = null; 
-   // remoteVideo[1].srcObject = null; 
-   // remoteVideo[2].srcObject = null; 
-   // remoteVideo[3].srcObject = null; 
-   //i=i-4;
 
-   //yourConn[0].close();
    arrayLength=yourConn.length;
    for (let k = 0; k < arrayLength; k++) {
       yourConn[k].close();
    }
-   // yourConn[0].close(); 
-   // yourConn[1].close(); 
-   // yourConn[2].close(); 
-   // yourConn[3].close(); 
 
    for (let k = 0; k < arrayLength; k++) {
       yourConn[k].onicecandidate = null;   
       yourConn[k].onicecandidate = null; 
-   }
-   // yourConn.onicecandidate = null;   
-   // yourConn.onicecandidate = null;   
+   }  
   
    for(let k=0;k<arrayLength;k++)
    {
       setupPeerConnection(stream);
    }
-   // setupPeerConnection(stream);
-   // setupPeerConnection(stream);
-   // setupPeerConnection(stream);
-   // setupPeerConnection(stream);
 };
